@@ -1,39 +1,62 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import AuthLayout from "../../components/layout/AuthLayout";
 import AuthInput from "../../components/input/AuthInput";
 import { Link, useNavigate } from "react-router";
 import { validateEmail } from "../../utils/helper";
+import axiosInstance from "../../utils/axiosInstance";
+import { API_PATHS } from "../../utils/apiPaths";
+import { UserContext } from "../../context/UserContext";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState(null);
   const [passwordError, setPasswordError] = useState(null);
+  const [loginError, setLoginError] = useState(null); 
 
+  const {updateUser} = useContext(UserContext)
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); 
+
+    let isValid = true;
 
     if (!validateEmail(email)) {
       setEmailError("Please enter a valid email address");
-      return;
+      isValid = false;
     } else {
-      setEmailError(null);
+      setEmailError(null); 
     }
+
 
     if (!password) {
       setPasswordError("Please enter the password");
-      return;
+      isValid = false;
     } else {
-      setPasswordError(null);
+      setPasswordError(null); 
     }
 
-    // Login API logic here
+    if (!isValid) return;
+
     try {
-      // Handle successful login
+      const response = await axiosInstance.post(API_PATHS.AUTH.LOGIN, {
+        email,
+        password,
+      });
+
+      const { token, user } = response.data;
+      if (token) {
+        setLoginError(null); 
+        localStorage.setItem("token", token);
+        updateUser(user)
+        navigate("/dashboard"); 
+      }
     } catch (error) {
       console.error("Login failed", error);
+      setLoginError(
+        "Invalid email or password"
+      );
     }
   };
 
@@ -78,12 +101,20 @@ const LoginForm = () => {
               >
                 {passwordError || "Placeholder"}
               </p>
+
+              <p
+                className={`text-red-500 font-medium text-xs mt-1 ${
+                  loginError ? "visible" : "invisible"
+                }`}
+              >
+                {loginError || "Placeholder"}
+              </p>
             </div>
           </div>
 
           <button
             type="submit"
-            className="btn btn-neutral w-full text-lg text-white mt-8 mb-4"
+            className="btn btn-neutral w-full text-lg text-white mt-4 mb-4"
           >
             Login
           </button>

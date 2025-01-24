@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import AuthLayout from "../../components/layout/AuthLayout";
 import { Link, useNavigate } from "react-router";
 import ProfilePhotoSelector from "../../components/input/ProfilePhotoSelector";
 import AuthInput from "../../components/input/AuthInput";
 import { validateEmail } from "../../utils/helper";
+import { UserContext } from "../../context/UserContext";
+import axiosInstance from "../../utils/axiosInstance";
+import { API_PATHS } from "../../utils/apiPaths";
+import uploadImage from "../../utils/uploadImage";
 
 const SignUpForm = () => {
   const [profilePic, setProfilePic] = useState(null);
@@ -15,45 +19,70 @@ const SignUpForm = () => {
   const [emailError, setEmailError] = useState(null);
   const [usernameError, setUsernameError] = useState(null);
   const [passwordError, setPasswordError] = useState(null);
+  const [signUpError, setSignUpError] = useState(null);
 
+  const { updateUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleSignUp = async (e) => {
     e.preventDefault();
+    let profileImageUrl = "";
+    let isValid = true;
 
     if (!fullName) {
       setFullNameError("Please enter your full name");
-      return;
+      isValid = false;
     } else {
       setFullNameError(null);
     }
 
     if (!validateEmail(email)) {
       setEmailError("Please enter a valid email address");
-      return;
+      isValid = false;
     } else {
       setEmailError(null);
     }
 
     if (!username) {
       setUsernameError("Please enter a username");
-      return;
+      isValid = false;
     } else {
       setUsernameError(null);
     }
 
     if (!password) {
       setPasswordError("Please enter the password");
-      return;
+      isValid = false;
     } else {
       setPasswordError(null);
     }
 
-    // sign up API logic here
+    if (!isValid) return;
+
     try {
-      // Handle successful sign-up
+      if (profilePic) {
+        const imgUploadRes = await uploadImage(profilePic);
+        profileImageUrl = imgUploadRes.imageUrl || "";
+      }
+
+      const response = await axiosInstance.post(API_PATHS.AUTH.REGISTER, {
+        fullName,
+        email,
+        username,
+        password,
+        profileImageUrl,
+      });
+
+      const { token, user } = response.data;
+      if (token) {
+        localStorage.setItem("token", token);
+        updateUser(user);
+        setSignUpError(null);
+        navigate("/dashboard");
+      }
     } catch (error) {
       console.error("Sign up failed", error);
+      setSignUpError("Something went wrong. Please try again.");
     }
   };
 
@@ -138,9 +167,17 @@ const SignUpForm = () => {
             </div>
           </div>
 
+          <p
+            className={`text-red-500 font-medium text-xs mt-4 mb-2 ${
+              signUpError ? "visible" : "invisible"
+            }`}
+          >
+            {signUpError || "Placeholder"}
+          </p>
+
           <button
             type="submit"
-            className="btn btn-neutral w-full text-lg text-white mt-8 mb-4"
+            className="btn btn-neutral w-full text-lg text-white mb-4"
           >
             Sign Up
           </button>
