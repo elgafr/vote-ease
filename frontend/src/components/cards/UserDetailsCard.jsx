@@ -16,9 +16,9 @@ const UserDetailsCard = ({
     totalVotesBookmarked
 }) => {
   return (
-    <div className="bg-slate-100 rounded-lg pr-10 pl-10 mt-16 overflow-hidden">
+    <div className="bg-neutral-content rounded-lg pr-10 pl-10 mt-16 overflow-hidden">
       <div className="w-full h-32 bg-cover flex justify-center relative">
-        <div className="absolute bottom-0 rounded-full overflow-hidden border-2 border-neutral-content">
+        <div className="absolute bottom-0 rounded-full overflow-hidden border-2 border-base-100">
           <img
             src={profileImageUrl || ""}
             alt="Profile Image"
