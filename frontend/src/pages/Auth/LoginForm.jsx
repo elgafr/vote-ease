@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import AuthLayout from "../../components/layout/AuthLayout";
 import AuthInput from "../../components/input/AuthInput";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router-dom"; // Pastikan Anda mengimpor dari 'react-router-dom'
 import { validateEmail } from "../../utils/helper";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPaths";
@@ -14,11 +14,11 @@ const LoginForm = () => {
   const [passwordError, setPasswordError] = useState(null);
   const [loginError, setLoginError] = useState(null); 
 
-  const {updateUser} = useContext(UserContext)
+  const { updateUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault(); // Mencegah form dari submit default
 
     let isValid = true;
 
@@ -28,7 +28,6 @@ const LoginForm = () => {
     } else {
       setEmailError(null); 
     }
-
 
     if (!password) {
       setPasswordError("Please enter the password");
@@ -49,14 +48,12 @@ const LoginForm = () => {
       if (token) {
         setLoginError(null); 
         localStorage.setItem("token", token);
-        updateUser(user)
-        navigate("/dashboard"); 
+        updateUser(user);
+        navigate("/dashboard"); // Navigasi tanpa refresh
       }
     } catch (error) {
       console.error("Login failed", error);
-      setLoginError(
-        "Invalid email or password"
-      );
+      setLoginError("Invalid email or password");
     }
   };
 

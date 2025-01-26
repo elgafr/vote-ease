@@ -3,6 +3,7 @@ import DashboardLayout from "../../components/layout/DashboardLayout";
 import { UserContext } from "../../context/UserContext";
 import useUserAuth from "../../hooks/useUserAuth";
 import { VOTE_TYPE } from "../../utils/data";
+import OptionInput from "../../components/input/OptionInput";
 const CreateVote = () => {
   useUserAuth();
   const { user } = useContext(UserContext);
@@ -65,11 +66,18 @@ const CreateVote = () => {
           <div className="mt-5">
             <label className="text-xs font-medium">Options</label>
               <div className="mt-3">
-
+                <OptionInput 
+                  optionList={voteData.options}
+                  setOptionList={(value) => {
+                    handleValueChange("options", value)
+                  }}
+                />
               </div>
             </div>
 
         )}
+
+        
       </div>
     </DashboardLayout>
   );

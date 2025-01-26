@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 const StatsInfo = ({ label, value }) => {
     return (
         <div className="text-center">
