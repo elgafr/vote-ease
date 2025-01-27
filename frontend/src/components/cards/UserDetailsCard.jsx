@@ -12,7 +12,7 @@ const UserDetailsCard = ({
     profileImageUrl,
     fullName,
     username,
-    totalVotesCast,
+    totalCastVotes,
     totalVotesCreated,
     totalVotesBookmarked
 }) => {
@@ -40,7 +40,7 @@ const UserDetailsCard = ({
 
         <div className="flex items-center justify-center gap-5 flex-wrap my-4">
             <StatsInfo label="Votes Created" value={totalVotesCreated || 0 }  />
-            <StatsInfo label="Votes Cast" value={totalVotesCast || 0}  />
+            <StatsInfo label="Votes Cast" value={totalCastVotes || 0}  />
             <StatsInfo label="Votes Bookmarked" value={totalVotesBookmarked || 0}  />
         </div>
       </div>

@@ -22,7 +22,7 @@ const DashboardLayout = ({ children, activeMenu }) => {
               profileImageUrl={user && user.profileImageUrl}
               fullName={user && user.fullName}
               username={user && user.username}
-              totalVotesCast={user && user.totalVotesCast}
+              totalCastVotes={user && user.totalCastVotes}
               totalVotesCreated={user && user.totalVotesCreated}
               totalVotesBookmarked={user && user.totalVotesBookmarked}
             />
