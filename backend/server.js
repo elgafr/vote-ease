@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js"
+import voteRoutes from "./routes/voteRoutes.js"
 import path from "path"
 import { fileURLToPath } from "url";
 
@@ -24,6 +25,7 @@ app.use(express.json());
 connectDB()
 
 app.use("/api/v1/auth", authRoutes)
+app.use("/api/v1/vote", voteRoutes)
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")))
 
